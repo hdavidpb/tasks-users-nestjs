@@ -8,9 +8,10 @@ import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id/parse-mongo-id
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
-  @Post('create/:id')
-  create(@Param("id") id:string , @Body() createTaskDto: CreateTaskDto ) {
-    return this.taskService.create(id,createTaskDto);
+  @Post('create')
+  create( @Body() createTaskDto: CreateTaskDto, @Req() request: Request & {userId:string} ) {
+
+    return this.taskService.create(request.userId,createTaskDto);
   }
 
 
@@ -24,7 +25,7 @@ export class TaskController {
 
  
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id',ParseMongoIdPipe) id: string) {
 
     return this.taskService.findOne(id);
   }
@@ -36,7 +37,7 @@ export class TaskController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id',ParseMongoIdPipe) id: string) {
     return this.taskService.remove(+id);
   }
 }
