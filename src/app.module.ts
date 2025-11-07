@@ -9,6 +9,8 @@ import { envsConfiguration } from './config/envs.config';
 import { TaskModule } from './task/task.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { JWTAuthGuard } from './auth/strategies/jwt.strategy';
 
 
 @Module({
@@ -35,6 +37,11 @@ import { JwtModule } from '@nestjs/jwt';
   
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [ 
+     {
+      provide: APP_GUARD,
+      useClass: JWTAuthGuard,
+    },
+    AppService ],
 })
 export class AppModule {}

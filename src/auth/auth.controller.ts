@@ -11,16 +11,19 @@ import {
 import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { Public } from 'src/common/public/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('login')
   loginUser(@Body() loginUser: LoginAuthDto) {
     return this.authService.login(loginUser);
   }
 
+  @Public()
   @Post('register')
   registerUser(@Body() createUser: CreateUserDto) {
     return this.authService.register(createUser);

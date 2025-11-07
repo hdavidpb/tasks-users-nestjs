@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { UserService } from 'src/user/user.service';
@@ -27,22 +27,36 @@ export class TaskService {
     };
   }
 
-  async findAll(userId:string) {
+  async findAll(userId: string) {
+    const user: User | null = await this.userService.findUserById(userId);
 
-    const user:User|null = await this.userService.findUserById(userId);
+    const tasks = await this.taskModule
+      .find({ user: user })
 
-    const tasks = await this.taskModule.find({user:user}).select('-user -__v').lean();
 
-
-    return tasks
+    return tasks;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id:string) {
+
+    const task = await this.taskModule.findById(id);
+    if (!task) throw new BadRequestException('Task not found');
+
+    return task;
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update( id: string, updateTaskDto: UpdateTaskDto) {
+    
+    const task:Task = await this.findOne(id);
+
+    const newTask = await task.updateOne(updateTaskDto)
+
+
+    
+    return {
+      message:"Task updated",
+      newTask
+    }
   }
 
   remove(id: number) {

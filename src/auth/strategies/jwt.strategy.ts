@@ -1,5 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
+import { IS_PUBLIC_KEY } from "src/common/public/public.decorator";
 
 
 
@@ -8,7 +10,8 @@ export class JWTAuthGuard implements CanActivate {
 
 
   constructor(
-    private readonly jwtService:JwtService
+    private readonly jwtService:JwtService,
+    private reflector: Reflector
   ){
 
   }
@@ -17,6 +20,14 @@ export class JWTAuthGuard implements CanActivate {
 
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+
+        // Verifica si la ruta tiene el flag @Public()
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) return true; // 💡 No proteger esta ruta
 
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);

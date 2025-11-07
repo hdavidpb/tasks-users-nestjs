@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } fro
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { JWTAuthGuard } from 'src/auth/strategies/jwt.strategy';
+import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id/parse-mongo-id.pipe';
 
 @Controller('task')
 export class TaskController {
@@ -14,7 +14,7 @@ export class TaskController {
   }
 
 
-  @UseGuards(JWTAuthGuard)
+ 
   @Get("all")
   findAll(@Req() request: Request & {userId:string}) {
 
@@ -22,14 +22,17 @@ export class TaskController {
     return this.taskService.findAll(request.userId);
   }
 
+ 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
+
+    return this.taskService.findOne(id);
   }
 
+ 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.taskService.update(+id, updateTaskDto);
+  update(@Param('id',ParseMongoIdPipe)  id: string, @Body() updateTaskDto: UpdateTaskDto) {
+    return this.taskService.update(id, updateTaskDto);
   }
 
   @Delete(':id')
