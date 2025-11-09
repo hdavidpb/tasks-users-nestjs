@@ -24,7 +24,7 @@ import { GeminiModule } from './gemini/gemini.module';
       secret:process.env.JWT_SECRET
     }),
   
-    MongooseModule.forRoot("mongodb://localhost:27017/tasks_api"),
+    MongooseModule.forRoot(process.env.MONGODB_URI!,{dbName:"tasks-users"}),
     
     UserModule,
     
