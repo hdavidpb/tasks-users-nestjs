@@ -65,14 +65,14 @@ export class AuthService {
 
     try {
 
-      const user = await this.jwtSvc.verify(refreshToken,{secret:this.jwtSecret});
+      const userByToken = await this.jwtSvc.verify(refreshToken,{secret:this.jwtSecret});
 
-      const payload:any =  {
-        sub: user._id,
-        email:user.email,
-        name:user.name,
-      };
-      const tokens = await this.generateTokens(payload);
+      const user:User | null = await this.userModel.findOne({email:userByToken.email})
+
+      if(!user) throw new BadRequestException("User not found!")
+
+
+      const tokens = await this.generateTokens(user);
 
       return tokens
 
@@ -99,15 +99,15 @@ export class AuthService {
   
           const accessToken = await this.jwtSvc.signAsync(jwtPayload, {
           secret: this.jwtSecret,
-          expiresIn: '1d',
+          expiresIn: '1h',
         });
   
          const refreshToken = await this.jwtSvc.signAsync(jwtPayload, {
           secret: this.jwtSecret,
-          expiresIn: '7d',
+          expiresIn: '3h',
         });
   
-        return { access_token: accessToken ,refresh_token:refreshToken};
+        return { access_token: accessToken ,refresh_token:refreshToken,user:{name:user.name}};
   
   
     }

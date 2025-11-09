@@ -1,17 +1,24 @@
-import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsDate, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateTaskDto {
 
+
+        @IsOptional()
+        @IsString()
+        _id:string;
     
         @IsString()
         @IsNotEmpty()
         title:string;
     
     
-
         @IsNotEmpty()
         @IsArray()
         tags:string[]
+
+        @IsOptional()
+        @IsString()
+        status?:string;
         
         @IsOptional()
         @IsString()    
@@ -21,6 +28,13 @@ export class CreateTaskDto {
         @IsMongoId()
         userId?: string;
     
+        @IsOptional()
+        @IsDate()
+        createdAt?:Date;
+
+        @IsOptional()
+        @IsDate()
+        updatedAt?:Date;  
 
 
 }

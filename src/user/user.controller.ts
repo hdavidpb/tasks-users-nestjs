@@ -10,13 +10,13 @@ export class UserController {
 
 
   
-  @Get(':id')
-  findUserInfo(@Param("id",ParseMongoIdPipe) id:string, @Req() request:Request & { userId:string }) {
-    return this.userService.findUserById(id);
+  @Get('')
+  findUserInfo( @Req() request:Request & { userId:string }) {
+    return this.userService.findUserById(request.userId);
   }
 
 
-  @Get()
+  @Get('all')
   findAll() {
     return this.userService.findAll();
   }

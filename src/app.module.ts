@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -11,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { JWTAuthGuard } from './auth/strategies/jwt.strategy';
+import { GeminiModule } from './gemini/gemini.module';
 
 
 @Module({
@@ -33,15 +32,15 @@ import { JWTAuthGuard } from './auth/strategies/jwt.strategy';
     
     AuthModule,
     
+    GeminiModule,
+    
 
   
   ],
-  controllers: [AppController],
   providers: [ 
      {
       provide: APP_GUARD,
       useClass: JWTAuthGuard,
-    },
-    AppService ],
+    }, ],
 })
 export class AppModule {}

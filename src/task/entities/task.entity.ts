@@ -16,6 +16,9 @@ export class Task extends Document {
     @Prop()
     description?:string;
 
+    @Prop({default:"active"})
+    status?:'active' | 'archived'
+
 
     @Prop({type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true})
     user:mongoose.Types.ObjectId
